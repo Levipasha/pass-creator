@@ -203,7 +203,15 @@ export const PassForm: React.FC<PassFormProps> = ({
 
       {/* Editor Actions */}
       <div className="editor-actions" style={{ marginTop: '2.5rem' }}>
-        <button className="btn-action primary" onClick={onDownload} style={{ width: '100%' }}>
+        <button 
+          className="btn-action primary" 
+          onClick={onDownload} 
+          disabled={!fullName.trim() || !instagramId.trim()}
+          style={{ 
+            width: '100%',
+            opacity: (!fullName.trim() || !instagramId.trim()) ? 0.5 : 1,
+            cursor: (!fullName.trim() || !instagramId.trim()) ? 'not-allowed' : 'pointer'
+          }}>
           <DownloadIcon /> Download PNG
         </button>
       </div>

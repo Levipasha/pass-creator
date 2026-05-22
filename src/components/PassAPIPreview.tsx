@@ -35,7 +35,14 @@ export const PassAPIPreview: React.FC<PassAPIPreviewProps> = ({
       </div>
 
       <div className="api-view-actions">
-        <button className="btn-action primary" onClick={onDownload}>
+        <button 
+          className="btn-action primary" 
+          onClick={onDownload}
+          disabled={!details.fullName.trim() || !details.instagramId.trim()}
+          style={{
+            opacity: (!details.fullName.trim() || !details.instagramId.trim()) ? 0.5 : 1,
+            cursor: (!details.fullName.trim() || !details.instagramId.trim()) ? 'not-allowed' : 'pointer'
+          }}>
           <DownloadIcon /> Download PNG
         </button>
         <button className="btn-action secondary" onClick={onEdit}>
