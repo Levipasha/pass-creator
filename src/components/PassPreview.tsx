@@ -94,12 +94,7 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
     >
       {/* Top Section: Logo */}
       <div className="pass-logo-wrap">
-        <div className="pass-cohort-logo">
-          C
-          <span className="logo-o-custom" />
-          HORT
-        </div>
-        <div className="pass-cohort-subtext">COWORKING</div>
+        <img src="/cohort-logo.png" alt="Cohort Coworking" style={{ width: '160px', height: 'auto', objectFit: 'contain' }} />
       </div>
 
       {/* Title */}

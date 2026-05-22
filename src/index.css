@@ -800,13 +800,17 @@ body::after {
 
 .cohort-pass.month-pass .pass-main-title {
   color: #000000;
-  font-size: 34px;
 }
 
 /* Pass Validity text block */
 .pass-validity-block {
   text-align: center;
   width: 100%;
+  min-height: 65px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .pass-validity-label {
@@ -873,24 +877,20 @@ body::after {
 .pass-icon-svg {
   display: block;
   stroke-width: 1.8;
-}
-
-.cohort-pass.day-pass .pass-icon-svg {
-  fill: var(--day-red);
   width: 48px;
   height: 48px;
 }
 
+.cohort-pass.day-pass .pass-icon-svg {
+  fill: var(--day-red);
+}
+
 .cohort-pass.week-pass .pass-icon-svg {
   fill: var(--week-red);
-  width: 42px;
-  height: 42px;
 }
 
 .cohort-pass.month-pass .pass-icon-svg {
   fill: #000000;
-  width: 36px;
-  height: 36px;
 }
 
 /* Pass Member details row & QR Code */

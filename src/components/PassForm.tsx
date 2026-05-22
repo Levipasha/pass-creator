@@ -118,7 +118,7 @@ export const PassForm: React.FC<PassFormProps> = ({
             id="fullName"
             type="text"
             className="form-input"
-            placeholder="John Doe"
+            placeholder="vamshi"
             value={fullName}
             onChange={(e) => onChange({ ...details, fullName: e.target.value })}
             required
@@ -136,7 +136,7 @@ export const PassForm: React.FC<PassFormProps> = ({
             id="instagramId"
             type="text"
             className="form-input"
-            placeholder="john_doe"
+            placeholder="vamshi"
             value={instagramId}
             onChange={(e) => onChange({ ...details, instagramId: e.target.value })}
             required
