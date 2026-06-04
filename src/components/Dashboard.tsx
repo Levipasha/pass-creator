@@ -37,6 +37,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectType }) => {
     </svg>
   );
 
+  // SVG Compass Icon for Art Explorer Pass
+  const CompassIcon = () => (
+    <svg className="dashboard-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '40px', height: '40px' }}>
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+  );
+
   // SVG Palette Icon for Day Pass
   const PaletteIcon = () => (
     <svg className="dashboard-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '40px', height: '40px' }}>
@@ -68,6 +76,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectType }) => {
 
   return (
     <div className="dashboard-grid">
+      {/* Art Explorer Pass Option */}
+      <a 
+        href="?type=explorer" 
+        className="pass-card-select explorer-select" 
+        onClick={(e) => {
+          e.preventDefault();
+          onSelectType('explorer');
+        }}
+      >
+        <div className="card-icon-wrapper">
+          <CompassIcon />
+        </div>
+        <h3 className="card-title">Art Explorer Pass</h3>
+        <p className="card-desc">
+          Official <strong>Explorer Pass</strong> in the premium pentagon shape. Valid for a single day of workspace access.
+        </p>
+        <span 
+          className={`btn-select ${copiedType === 'explorer' ? 'copied' : ''}`}
+          onClick={(e) => handleCopyLink(e, 'explorer')}
+        >
+          {copiedType === 'explorer' ? <CheckIcon /> : <CopyIcon />}
+          {copiedType === 'explorer' ? 'Copied!' : 'Copy Link'}
+        </span>
+      </a>
+
       {/* Day Pass Option */}
       <a 
         href="?type=day" 

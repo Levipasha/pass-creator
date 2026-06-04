@@ -25,7 +25,7 @@ function App() {
       const api = params.get('api') === 'true';
       const type = params.get('type') as PassType | null;
 
-      if (type && ['day', 'week', 'month'].includes(type)) {
+      if (type && ['explorer', 'day', 'week', 'month'].includes(type)) {
         setSelectedType(type);
         setIsApiMode(api);
         setDetails((prev) => {
@@ -35,7 +35,7 @@ function App() {
           if (passIdParam) {
             finalPassId = passIdParam;
           } else {
-            const expectedPrefix = `COH-${type.toUpperCase()}-`;
+            const expectedPrefix = type === 'explorer' ? 'COH-EXP-' : `COH-${type.toUpperCase()}-`;
             if (!finalPassId || !finalPassId.startsWith(expectedPrefix)) {
               const randomDigits = Math.floor(10000 + Math.random() * 90000);
               finalPassId = `${expectedPrefix}${randomDigits}`;
@@ -68,7 +68,8 @@ function App() {
     
     // Auto-generate a new unique ID
     const randomDigits = Math.floor(10000 + Math.random() * 90000);
-    const generatedId = `COH-${type.toUpperCase()}-${randomDigits}`;
+    const prefix = type === 'explorer' ? 'COH-EXP' : `COH-${type.toUpperCase()}`;
+    const generatedId = `${prefix}-${randomDigits}`;
 
     setDetails((prev) => ({
       ...prev,
@@ -89,16 +90,17 @@ function App() {
   };
 
   const handleDownload = () => {
-    // We target the pass inside the download container specifically
+    // Target the outer pentagon pass element for full shape capture
     const element = document.querySelector('#download-pass-container .cohort-pass') as HTMLElement;
     if (!element) return;
 
-    // Apply temporary print adjustments to capture high quality
+    // Use null background to preserve pentagon clip-path shape in PNG
     html2canvas(element, {
       scale: 3, // Ultra-high resolution (3x)
       useCORS: true,
-      backgroundColor: '#ffffff', // Force white background for download
+      backgroundColor: null, // Transparent so the pentagon shape shows correctly
       logging: false,
+      allowTaint: true,
     }).then((canvas) => {
       const link = document.createElement('a');
       link.download = `cohort-${details.passType}-pass-${details.passId || 'download'}.png`;

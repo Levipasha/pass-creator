@@ -1,7 +1,7 @@
 import React from 'react';
 import { QRCodeComponent } from './QRCodeComponent';
 
-export type PassType = 'day' | 'week' | 'month';
+export type PassType = 'explorer' | 'day' | 'week' | 'month';
 
 export interface PassDetails {
   fullName: string;
@@ -24,7 +24,8 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
   // Formatting dates for display
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '';
-    const date = new Date(dateStr);
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -32,7 +33,7 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
     });
   };
 
-  // Generate QR Value (encodes pass details as a query string or JSON)
+  // Generate QR Value
   const qrValue = JSON.stringify({
     id: passId,
     name: fullName,
@@ -42,7 +43,7 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
     end: endDate,
   });
 
-  // SVG Icons
+  // SVG Icons for standard passes
   const PaletteIcon = () => (
     <svg className="pass-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 3a9 9 0 0 0-9 9 9 9 0 0 0 9 9c1.5 0 2.5-1 2.5-2.5 0-.7-.3-1.3-.7-1.7-.4-.4-.7-.9-.7-1.5 0-1.1.9-2 2-2h1.9C19.8 13.3 21 11.2 21 9a9 9 0 0 0-9-6z" />
@@ -86,11 +87,109 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
     </svg>
   );
 
+  // If explorer type, render the pentagon pass layout
+  if (passType === 'explorer') {
+    return (
+      <div
+        id="printable-pass"
+        className={`cohort-pass explorer-pass ${isPreview ? 'preview-mode' : 'print-target'}`}
+      >
+        {/* SVG Background for rounded corners, even border, and nestled hole punch */}
+        <svg
+          viewBox="0 0 370 480"
+          className="pass-svg-bg"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <clipPath id="inner-white-area">
+              <polygon points="185,29 341,182 291,451 79,451 29,182" />
+            </clipPath>
+          </defs>
 
+          {/* Outer pentagon (red border + white background) */}
+          <polygon
+            points="185,15 355,182 303,465 67,465 15,182"
+            fill="#ffffff"
+            stroke="#c21d24"
+            strokeWidth="28"
+            strokeLinejoin="round"
+          />
+
+          {/* Black lanyard hole punch, clipped by the inner white area */}
+          <circle
+            cx="185"
+            cy="29"
+            r="40"
+            fill="#111111"
+            clipPath="url(#inner-white-area)"
+          />
+        </svg>
+
+        <div className="pass-pentagon-inner">
+          {/* Cohort Coworking Logo */}
+          <div className="pass-logo-wrap">
+            <img
+              src="/cohort-logo.png"
+              alt="Cohort Coworking"
+              className="pass-cohort-logo-img"
+            />
+          </div>
+
+          {/* Pass Title */}
+          <div className="pass-title-block">
+            <div className="pass-title-line1">ART</div>
+            <div className="pass-title-line2">EXPLORER</div>
+            <div className="pass-title-line3">PASS</div>
+          </div>
+
+          {/* Validity */}
+          <div className="pass-validity-block">
+            <div className="pass-validity-label">V A L I D I T Y</div>
+            <div className="pass-validity-value">ONE DAY</div>
+          </div>
+
+          {/* User Details (only when name/ig filled) */}
+          {(fullName || instagramId || passId) && (
+            <div className="pass-user-details">
+              <div className="pass-meta-info">
+                <div className="pass-meta-row-top">
+                  {fullName && (
+                    <div className="pass-meta-row">
+                      NAME <strong>{fullName}</strong>
+                    </div>
+                  )}
+                  {instagramId && (
+                    <div className="pass-meta-row">
+                      INSTAGRAM <strong>@{instagramId.replace('@', '')}</strong>
+                    </div>
+                  )}
+                </div>
+                {passId && (
+                  <div className="pass-meta-row-bottom">
+                    <div className="pass-meta-row">
+                      PASS ID <strong className="pass-id-mono">#{passId}</strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ArtArtist Badge */}
+          <div className="pass-badge-block">
+            <img src="/art-artist-logo.png" className="pass-badge-logo-img" alt="Art Artist" />
+            <div className="pass-badge-text">ART ARTIST</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render the standard rectangular pass layout for day, week, month
   return (
-    <div 
+    <div
       id="printable-pass"
-      className={`cohort-pass ${passType}-pass ${isPreview ? 'preview-mode' : 'print-target'}`}
+      className={`cohort-pass standard-pass ${passType}-pass ${isPreview ? 'preview-mode' : 'print-target'}`}
     >
       {/* Top Section: Logo */}
       <div className="pass-logo-wrap">
@@ -151,7 +250,7 @@ export const PassPreview: React.FC<PassPreviewProps> = ({ details, isPreview = t
           </div>
           <div className="pass-meta-row" style={{ marginTop: '2px' }}>
             PASS ID
-            <strong style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '10.5px' }}>
+            <strong className="pass-id-mono">
               #{passId || 'CH-XXXXX'}
             </strong>
           </div>

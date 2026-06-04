@@ -99,6 +99,7 @@ export const PassForm: React.FC<PassFormProps> = ({
       <div className="form-header">
         <div className="form-title-block">
           <h2>
+            {passType === 'explorer' && 'Art Explorer Pass Details'}
             {passType === 'day' && 'Day Pass Details'}
             {passType === 'week' && 'Weekly Pass Details'}
             {passType === 'month' && 'Monthly Pass Details'}
@@ -164,7 +165,7 @@ export const PassForm: React.FC<PassFormProps> = ({
       </div>
 
       {/* Date Selectors depending on type */}
-      {passType !== 'day' && (
+      {(passType !== 'day' && passType !== 'explorer') && (
         <div className="form-row">
           <div className="form-group">
             <label className="form-label" htmlFor="startDate">Start Date</label>

@@ -566,12 +566,19 @@ body::after {
   .pass-container-outer {
     padding: 1rem;
     border-radius: 24px;
-    height: 440px;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 1.5rem;
+  }
+
+  .pass-container-outer:has(.explorer-pass) {
+    height: 400px;
+  }
+
+  .pass-container-outer:has(.standard-pass) {
+    height: 440px;
   }
 
   .pass-container-outer .cohort-pass.preview-mode {
@@ -600,7 +607,10 @@ body::after {
 }
 
 @media (max-width: 400px) {
-  .pass-container-outer {
+  .pass-container-outer:has(.explorer-pass) {
+    height: 340px;
+  }
+  .pass-container-outer:has(.standard-pass) {
     height: 380px;
   }
 
@@ -610,7 +620,10 @@ body::after {
 }
 
 @media (max-width: 350px) {
-  .pass-container-outer {
+  .pass-container-outer:has(.explorer-pass) {
+    height: 290px;
+  }
+  .pass-container-outer:has(.standard-pass) {
     height: 330px;
   }
 
@@ -657,7 +670,7 @@ body::after {
 /* Pass Holder & Levitation Effect - Contrast grey background */
 .pass-container-outer {
   background: radial-gradient(circle at top left, #f3f4f6, #e5e7eb);
-  padding: 2.2rem;
+  padding: 2.5rem 3rem;
   border-radius: 32px;
   border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: 
@@ -668,11 +681,19 @@ body::after {
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: visible;
 }
 
 /* Floating animation on preview pass to look premium & 3D */
 .pass-container-outer .cohort-pass.preview-mode {
   animation: levitate 5s infinite ease-in-out;
+}
+
+.pass-container-outer .cohort-pass.explorer-pass.preview-mode {
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.12));
+}
+
+.pass-container-outer .cohort-pass.standard-pass.preview-mode {
   box-shadow: 
     0 15px 35px rgba(0,0,0,0.06),
     0 2px 4px rgba(0,0,0,0.02);
@@ -680,11 +701,26 @@ body::after {
 
 @keyframes levitate {
   0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(0.5deg); }
+  50% { transform: translateY(-8px) rotate(0.4deg); }
   100% { transform: translateY(0px) rotate(0deg); }
 }
 
-/* --- THE PHYSICAL PASS CARD DESIGN (Fidelity matching images) --- */
+/* =========================================================
+   THE PHYSICAL PASS CARD — Pentagon Shape (Reference Match)
+   ========================================================= */
+
+/*
+  The pentagon shape is achieved by:
+  1. A large outer wrapper that clips to the pentagon using clip-path
+  2. The thick red border is simulated with a red outer layer + white inner
+  3. A black hole-punch circle at the top center
+*/
+
+/* =========================================================
+   THE PHYSICAL PASS CARD DESIGN
+   ========================================================= */
+
+/* --- GENERAL & STANDARD RECTANGULAR PASS --- */
 .cohort-pass {
   width: 410px;
   height: 535px;
@@ -701,24 +737,77 @@ body::after {
   user-select: none;
   border-radius: 20px;
   transition: all 0.4s ease;
+  flex-shrink: 0;
 }
 
 /* Day Pass (Sketch) */
-.cohort-pass.day-pass {
+.cohort-pass.standard-pass.day-pass {
   border: 4px dashed #000000;
 }
 
 /* Week Pass (Studio) */
-.cohort-pass.week-pass {
+.cohort-pass.standard-pass.week-pass {
   border: 4px dashed var(--week-red);
 }
 
 /* Month Pass (Residency) */
-.cohort-pass.month-pass {
+.cohort-pass.standard-pass.month-pass {
   border: 4px solid #000000;
 }
 
-/* Cohort Logo SVG structure */
+/* --- THE EXCLUSIVELY SHAPED PENTAGON PASS (Art Explorer) --- */
+.cohort-pass.explorer-pass {
+  width: 370px;
+  height: 480px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pass-svg-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Inner layout area — sits on top of the SVG background */
+.pass-pentagon-inner {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4.8rem 2rem 2.2rem;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+/* Black hole-punch at top of pass */
+.pass-hole-punch {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 36px;
+  background: #111111;
+  border-radius: 0 0 50px 50px;
+  z-index: 10;
+  /* clip the bottom half to make a half-circle */
+  clip-path: ellipse(32px 26px at 50% 0%);
+}
+
+/* Cohort Coworking Logo */
 .pass-logo-wrap {
   display: flex;
   flex-direction: column;
@@ -726,61 +815,22 @@ body::after {
   width: 100%;
 }
 
-.pass-cohort-logo {
-  display: flex;
-  align-items: center;
-  font-weight: 800;
-  font-size: 26px;
-  color: #111111;
-  letter-spacing: 0.5px;
-  line-height: 1;
+.explorer-pass .pass-logo-wrap {
+  margin-top: 0;
 }
 
-/* Custom letter O in COHORT matching the logo image */
-.logo-o-custom {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border: 4px solid #111111;
-  border-radius: 50%;
-  margin: 0 2px;
-  display: inline-block;
+.pass-cohort-logo-img {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
-.logo-o-custom::after {
-  content: '';
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  background-color: var(--accent-red);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.explorer-pass .pass-cohort-logo-img {
+  width: 105px;
 }
 
-.logo-o-custom::before {
-  content: '';
-  position: absolute;
-  width: 4.5px;
-  height: 4.5px;
-  background-color: var(--accent-red);
-  border-radius: 50%;
-  top: -4px;
-  left: -2px;
-}
-
-.pass-cohort-subtext {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--accent-red);
-  letter-spacing: 5px;
-  margin-top: 2px;
-  text-indent: 5px;
-  text-align: center;
-}
-
-/* Pass main titles */
+/* Standard pass title styling */
 .pass-main-title {
   font-weight: 800;
   font-size: 32px;
@@ -790,82 +840,135 @@ body::after {
   line-height: 1.1;
 }
 
-.cohort-pass.day-pass .pass-main-title {
+.cohort-pass.standard-pass.day-pass .pass-main-title {
   color: var(--day-red);
 }
 
-.cohort-pass.week-pass .pass-main-title {
+.cohort-pass.standard-pass.week-pass .pass-main-title {
   color: var(--week-red);
 }
 
-.cohort-pass.month-pass .pass-main-title {
+.cohort-pass.standard-pass.month-pass .pass-main-title {
   color: #000000;
+}
+
+/* Explorer pass title styling (Pentagon) */
+.explorer-pass .pass-title-block {
+  text-align: center;
+  line-height: 1;
+  width: 100%;
+}
+
+.explorer-pass .pass-title-line1 {
+  font-size: 46px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.95;
+  color: var(--day-red);
+}
+
+.explorer-pass .pass-title-line2 {
+  font-size: 38px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.95;
+  color: #111111;
+}
+
+.explorer-pass .pass-title-line3 {
+  font-size: 46px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.95;
+  color: var(--day-red);
 }
 
 /* Pass Validity text block */
 .pass-validity-block {
   text-align: center;
   width: 100%;
-  min-height: 65px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
 }
 
+.standard-pass .pass-validity-block {
+  min-height: 65px;
+  justify-content: flex-start;
+}
+
+.explorer-pass .pass-validity-block {
+  gap: 1px;
+}
+
 .pass-validity-label {
+  text-transform: uppercase;
+  display: block;
+}
+
+.standard-pass .pass-validity-label {
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 8px;
   text-indent: 8px;
-  text-transform: uppercase;
   margin-bottom: 2px;
-  display: block;
 }
 
-.cohort-pass.day-pass .pass-validity-label {
+.cohort-pass.standard-pass.day-pass .pass-validity-label { color: var(--day-red); }
+.cohort-pass.standard-pass.week-pass .pass-validity-label { color: var(--week-red); }
+.cohort-pass.standard-pass.month-pass .pass-validity-label { color: #000000; }
+
+.explorer-pass .pass-validity-label {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 5px;
   color: var(--day-red);
 }
 
-.cohort-pass.week-pass .pass-validity-label {
-  color: var(--week-red);
-}
-
-.cohort-pass.month-pass .pass-validity-label {
-  color: #000000;
-}
-
 .pass-validity-value {
+  text-transform: uppercase;
+  display: block;
+}
+
+.standard-pass .pass-validity-value {
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 6px;
   text-indent: 6px;
-  text-transform: uppercase;
-  display: block;
 }
 
-.cohort-pass.day-pass .pass-validity-value {
-  color: var(--day-red);
-}
+.cohort-pass.standard-pass.day-pass .pass-validity-value { color: var(--day-red); }
+.cohort-pass.standard-pass.week-pass .pass-validity-value { color: var(--week-red); }
+.cohort-pass.standard-pass.month-pass .pass-validity-value { color: #000000; }
 
-.cohort-pass.week-pass .pass-validity-value {
-  color: var(--week-red);
-}
-
-.cohort-pass.month-pass .pass-validity-value {
-  color: #000000;
+.explorer-pass .pass-validity-value {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 5px;
+  color: #111111;
 }
 
 .pass-dates-subtext {
-  font-size: 10.5px;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
   color: #4b5563;
-  margin-top: 6px;
   letter-spacing: 0.2px;
 }
 
-/* Icon arrangement inside pass */
+.standard-pass .pass-dates-subtext {
+  font-size: 10.5px;
+  margin-top: 6px;
+}
+
+.explorer-pass .pass-dates-subtext {
+  font-size: 9px;
+  margin-top: 3px;
+}
+
+/* Icon arrangement inside standard pass */
 .pass-icons-row {
   display: flex;
   align-items: center;
@@ -881,67 +984,164 @@ body::after {
   height: 48px;
 }
 
-.cohort-pass.day-pass .pass-icon-svg {
+.cohort-pass.standard-pass.day-pass .pass-icon-svg {
   fill: var(--day-red);
 }
 
-.cohort-pass.week-pass .pass-icon-svg {
+.cohort-pass.standard-pass.week-pass .pass-icon-svg {
   fill: var(--week-red);
 }
 
-.cohort-pass.month-pass .pass-icon-svg {
+.cohort-pass.standard-pass.month-pass .pass-icon-svg {
   fill: #000000;
 }
 
 /* Pass Member details row & QR Code */
 .pass-user-details {
-  border-top: 1.5px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
-  padding: 0.75rem 0.5rem;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 1rem;
   align-items: center;
+}
+
+.standard-pass .pass-user-details {
+  border-top: 1.5px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+  padding: 0.75rem 0.5rem;
+  gap: 1rem;
+}
+
+.explorer-pass .pass-user-details {
+  border-top: 1px solid rgba(0, 0, 0, 0.10);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.10);
+  padding: 0.5rem 0;
+  width: 200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .pass-meta-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
   text-align: left;
 }
 
+.standard-pass .pass-meta-info {
+  gap: 5px;
+}
+
+.explorer-pass .pass-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.explorer-pass .pass-meta-row-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.explorer-pass .pass-meta-row-top .pass-meta-row:first-child {
+  text-align: left;
+}
+
+.explorer-pass .pass-meta-row-top .pass-meta-row:last-child {
+  text-align: right;
+}
+
+.explorer-pass .pass-meta-row-bottom {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.explorer-pass .pass-meta-row-bottom .pass-meta-row {
+  text-align: center;
+}
+
 .pass-meta-row {
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.standard-pass .pass-meta-row {
   font-size: 9px;
   color: #4b5563;
-  text-transform: uppercase;
   letter-spacing: 1px;
-  line-height: 1.2;
+}
+
+.explorer-pass .pass-meta-row {
+  font-size: 8px;
+  color: #6b7280;
+  letter-spacing: 0.8px;
 }
 
 .pass-meta-row strong {
   color: #111;
-  font-size: 12px;
-  letter-spacing: 0px;
   display: block;
   margin-top: 1px;
 }
 
+.standard-pass .pass-meta-row strong {
+  font-size: 12px;
+  letter-spacing: 0px;
+}
+
+.explorer-pass .pass-meta-row strong {
+  font-size: 9px;
+  letter-spacing: 0px;
+}
+
+.pass-id-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.standard-pass .pass-id-mono {
+  font-size: 10.5px !important;
+}
+
+.explorer-pass .pass-id-mono {
+  font-size: 8px !important;
+}
+
 .pass-qr-wrap {
-  width: 62px;
-  height: 62px;
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 3px;
-  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.standard-pass .pass-qr-wrap {
+  width: 62px;
+  height: 62px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Art Artist Hexagon Badge */
+.pass-qr-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+}
+
+.explorer-pass .pass-qr-wrap {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  padding: 2px;
+  border-radius: 4px;
+}
+
+/* Art Artist Badge */
 .pass-badge-block {
   display: flex;
   flex-direction: column;
@@ -950,20 +1150,38 @@ body::after {
 }
 
 .pass-badge-logo-img {
-  height: 48px;
   width: auto;
   display: block;
   object-fit: contain;
 }
 
+.standard-pass .pass-badge-logo-img {
+  height: 48px;
+}
+
+.explorer-pass .pass-badge-logo-img {
+  height: 38px;
+}
+
 .pass-badge-text {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.standard-pass .pass-badge-text {
   font-size: 9px;
   font-weight: 800;
   color: #000000;
   letter-spacing: 1.8px;
   margin-top: 6px;
-  text-transform: uppercase;
-  text-align: center;
+}
+
+.explorer-pass .pass-badge-text {
+  font-size: 7.5px;
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: 2px;
+  margin-top: 3px;
 }
 
 /* Form Action Buttons styling */
@@ -1235,34 +1453,38 @@ body::after {
     print-color-adjust: exact;
   }
 
-  .cohort-pass.day-pass {
+  .cohort-pass.standard-pass {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .cohort-pass.standard-pass.day-pass {
     border: 4px dashed #000000 !important;
   }
 
-  .cohort-pass.week-pass {
+  .cohort-pass.standard-pass.week-pass {
     border: 4px dashed var(--week-red) !important;
   }
 
-  .cohort-pass.month-pass {
+  .cohort-pass.standard-pass.month-pass {
     border: 4px solid #000000 !important;
   }
 
-  .logo-o-custom {
-    border: 4px solid #111111 !important;
+  .cohort-pass.explorer-pass {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .pass-pentagon-inner {
+    background: transparent !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  .logo-o-custom::after {
-    background-color: var(--accent-red) !important;
-  }
-
-  .logo-o-custom::before {
-    background-color: var(--accent-red) !important;
-  }
-
-  polygon {
-    fill: #c21d24 !important;
+  .pass-hole-punch {
+    background: #111111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
@@ -1283,10 +1505,19 @@ body::after {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
-  width: 410px !important;
-  height: 535px !important;
   opacity: 0 !important;
   pointer-events: none !important;
   z-index: -9999 !important;
-  overflow: hidden !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+.hidden-download-container:has(.explorer-pass) {
+  width: 370px !important;
+  height: 480px !important;
+}
+
+.hidden-download-container:has(.standard-pass) {
+  width: 410px !important;
+  height: 535px !important;
 }
